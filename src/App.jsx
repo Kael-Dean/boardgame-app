@@ -26,18 +26,19 @@ export const App = () => {
   if (!initialCheckDone) return null;
 
   return (
-    <Routes>
-  <Route path="/" element={<LogIn />} />
-  <Route path="/lobby/:id" element={<Lobby />} />
+  <Routes>
+   <Route path="/" element={<LogIn />} />
 
-  {/* ✅ เส้นทางที่อยู่ใน Layout เดียวกัน */}
-  <Route element={<AppLayout />}>
-    <Route path="/home" element={<Home />} />
-    <Route path="/search" element={<Search />} />
-    <Route path="/basket" element={<Basket />} />
-    <Route path="/profile" element={<Profile />} />
-  </Route>
-</Routes>
+  {/* ✅ ทุกหน้าที่ใช้ Layout เดียวกัน */}
+    <Route element={<AppLayout />}>
+      <Route path="/home" element={<Home />} />
+      <Route path="/search" element={<Search />} />
+      <Route path="/basket" element={<Basket />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/lobby/:id" element={<Lobby />} />  {/* ✅ ย้ายเข้ามาด้วย */}
+    </Route>
+ </Routes>
+
   );
 };
 
