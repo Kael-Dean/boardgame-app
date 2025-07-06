@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsList, BsX } from "react-icons/bs";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { ImProfile } from "react-icons/im";
@@ -6,6 +6,7 @@ import { FaSearch, FaHome, FaShoppingBasket } from "react-icons/fa";
 
 export const AppLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null); // ✅ ref เพื่อเช็ค click นอก sidebar
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -24,6 +25,23 @@ export const AppLayout = () => {
   const isActive = (path) => location.pathname === path;
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
   const inactiveStyle = "hover:text-yellow-100";
+
+  // ✅ ปิด sidebar เมื่อกดข้างนอก
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsSidebarOpen(false);
+      }
+    };
+    if (isSidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSidebarOpen]);
 
   return (
     <>
@@ -51,7 +69,10 @@ export const AppLayout = () => {
 
       {/* Sidebar */}
       {isSidebarOpen && (
-        <div className="fixed top-0 left-0 w-64 h-full bg-[#684328] text-white z-40 shadow-lg pt-20">
+        <div
+          ref={sidebarRef} // ✅ ผูก ref
+          className="fixed top-0 left-0 w-64 h-full bg-[#684328] text-white z-40 shadow-lg pt-20"
+        >
           <div className="p-5 border-b border-white/40 text-xl font-vt">
             👤 {user?.name || "Guest"}
           </div>
@@ -106,3 +127,4 @@ export const AppLayout = () => {
     </>
   );
 };
+
