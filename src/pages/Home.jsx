@@ -1,5 +1,6 @@
-import { TableCard } from "../components/TableCard";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { TableCard } from "../components/TableCard";
 
 const tableData = [
   { id: 1, players: "2-4", status: "available" },
@@ -13,6 +14,15 @@ const tableData = [
 export const Home = () => {
   const navigate = useNavigate();
 
+  // ✅ ตรวจสอบว่ามี token หรือไม่ ถ้าไม่มีให้กลับไปหน้า Login
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("⛔ กรุณาเข้าสู่ระบบก่อนใช้งาน");
+      navigate("/");
+    }
+  }, [navigate]);
+
   const handleJoinTable = (tableNumber) => {
     navigate(`/lobby/${tableNumber}`);
   };
@@ -23,7 +33,7 @@ export const Home = () => {
                     rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
       </p>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {tableData.map((table) => (
           <TableCard

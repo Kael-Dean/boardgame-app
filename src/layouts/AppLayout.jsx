@@ -22,8 +22,6 @@ export const AppLayout = () => {
   };
 
   const isActive = (path) => location.pathname === path;
-
-  // 🔆 style สำหรับปุ่ม active และ inactive
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
   const inactiveStyle = "hover:text-yellow-100";
 
@@ -54,8 +52,13 @@ export const AppLayout = () => {
       {/* Sidebar */}
       {isSidebarOpen && (
         <div className="fixed top-0 left-0 w-64 h-full bg-[#684328] text-white z-40 shadow-lg pt-20">
-          <div className="p-5 border-b border-white/40">👤 {user?.name || "Guest"}</div>
-          <div className="p-5 text-red-400 hover:text-red-200 cursor-pointer" onClick={handleLogout}>
+          <div className="p-5 border-b border-white/40 text-xl font-vt">
+            👤 {user?.name || "Guest"}
+          </div>
+          <div
+            className="p-5 text-red-400 hover:text-red-200 cursor-pointer text-xl font-vt"
+            onClick={handleLogout}
+          >
             🚪 Logout
           </div>
         </div>
@@ -69,32 +72,32 @@ export const AppLayout = () => {
       {/* BottomNav */}
       <div className="fixed bottom-0 left-0 w-full h-16 glass bg-gradient-to-b from-[#3b2417]/50 to-[#1a0f07]/90 text-yellow-300 flex justify-around items-center z-50 shadow-inner border-t border-yellow-900/20">
         <button
-          onClick={() => goTo('/home')}
-          className={`flex flex-col items-center text-xs transition ${isActive('/home') ? activeStyle : inactiveStyle}`}
+          onClick={() => goTo("/home")}
+          className={`flex flex-col items-center text-xs transition ${isActive("/home") ? activeStyle : inactiveStyle}`}
         >
           <FaHome className="text-xl" />
           <span>Home</span>
         </button>
 
         <button
-          onClick={() => goTo('/search')}
-          className={`flex flex-col items-center text-xs transition ${isActive('/search') ? activeStyle : inactiveStyle}`}
+          onClick={() => goTo("/search")}
+          className={`flex flex-col items-center text-xs transition ${isActive("/search") ? activeStyle : inactiveStyle}`}
         >
           <FaSearch className="text-xl" />
           <span>Search</span>
         </button>
 
         <button
-          onClick={() => goTo('/basket')}
-          className={`flex flex-col items-center text-xs transition ${isActive('/basket') ? activeStyle : inactiveStyle}`}
+          onClick={() => goTo("/basket")}
+          className={`flex flex-col items-center text-xs transition ${isActive("/basket") ? activeStyle : inactiveStyle}`}
         >
           <FaShoppingBasket className="text-xl" />
           <span>Basket</span>
         </button>
 
         <button
-          onClick={() => goTo('/profile')}
-          className={`flex flex-col items-center text-xs transition ${isActive('/profile') ? activeStyle : inactiveStyle}`}
+          onClick={() => goTo("/profile")}
+          className={`flex flex-col items-center text-xs transition ${isActive("/profile") ? activeStyle : inactiveStyle}`}
         >
           <ImProfile className="text-xl" />
           <span>Profile</span>
