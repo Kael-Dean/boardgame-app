@@ -10,7 +10,7 @@ const SignUpBox = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://bgai-repo.onrender.com/sign-up', {
+      const res = await fetch('https://bgai-repo.onrender.com/api/sign-up', { // ✅ แก้ path ให้ตรง backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,13 +19,13 @@ const SignUpBox = () => {
           email: email,
           username: name,
           password: password,
-          age: 20, // ✅ ตอนนี้ hardcoded เป็น 20 ปี (สามารถเพิ่ม input ในภายหลังได้)
+          age: 20, // ✅ ยัง hardcoded ได้สำหรับทดสอบ
         }),
       });
 
       if (res.ok) {
         alert('✅ สมัครสมาชิกสำเร็จ!');
-        navigate('/'); // ✅ กลับไปหน้า Login
+        navigate('/'); // ✅ กลับหน้า login
       } else {
         const errorText = await res.text();
         alert('❌ สมัครไม่สำเร็จ: ' + errorText);
