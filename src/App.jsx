@@ -3,6 +3,11 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { LogIn } from './pages/Login';
 import { Home } from './pages/Home';
 import { Lobby } from './pages/Lobby';
+import { Basket } from './pages/Basket';
+import { Profile } from './pages/Profile';
+import { Search } from './pages/Search';  
+import { AppLayout } from './layouts/AppLayout';
+
 
 export const App = () => {
   const navigate = useNavigate();
@@ -22,11 +27,17 @@ export const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<LogIn />} />
-      <Route path="/home" element={<Home />} />
-      
-      <Route path="/lobby/:id" element={<Lobby />} />
-    </Routes>
+  <Route path="/" element={<LogIn />} />
+  <Route path="/lobby/:id" element={<Lobby />} />
+
+  {/* ✅ เส้นทางที่อยู่ใน Layout เดียวกัน */}
+  <Route element={<AppLayout />}>
+    <Route path="/home" element={<Home />} />
+    <Route path="/search" element={<Search />} />
+    <Route path="/basket" element={<Basket />} />
+    <Route path="/profile" element={<Profile />} />
+  </Route>
+</Routes>
   );
 };
 

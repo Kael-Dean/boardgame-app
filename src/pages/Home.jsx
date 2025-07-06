@@ -1,6 +1,5 @@
-import { AppLayout } from "../layouts/AppLayout";
 import { TableCard } from "../components/TableCard";
-import { useNavigate } from "react-router-dom"; // ✅
+import { useNavigate } from "react-router-dom";
 
 const tableData = [
   { id: 1, players: "2-4", status: "available" },
@@ -15,11 +14,11 @@ export const Home = () => {
   const navigate = useNavigate();
 
   const handleJoinTable = (tableNumber) => {
-    navigate(`/lobby/${tableNumber}`); // ✅ เปลี่ยนเป็น dynamic path
+    navigate(`/lobby/${tableNumber}`);
   };
 
   return (
-    <AppLayout>
+    <>
       <p className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-black font-bold py-4 px-6 text-2xl 
                     rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
@@ -32,11 +31,11 @@ export const Home = () => {
             tableNumber={table.id}
             players={table.players}
             status={table.status}
-            onJoin={handleJoinTable} // ✅ ส่งฟังก์ชันเข้าร่วม
+            onJoin={handleJoinTable}
           />
         ))}
       </div>
-    </AppLayout>
+    </>
   );
 };
 
