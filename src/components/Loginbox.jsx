@@ -1,3 +1,4 @@
+// ✅ LoginBox.jsx (อัปเดตการเก็บ user ให้เก็บ username เป็น name เพื่อให้ AppLayout อ่านได้ตรง)
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,8 +39,14 @@ export const LoginBox = () => {
       }
 
       const data = await response.json();
+      // ✅ แก้ตรงนี้: map 'username' -> 'name' เพื่อให้ AppLayout ใช้อ่านได้เลย
+      const fixedUser = {
+        ...data.user,
+        name: data.user.username // <- เพิ่มชื่อที่ AppLayout ใช้
+      };
+
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify(fixedUser));
       alert('✅ เข้าระบบสำเร็จ!');
       navigate('/home');
     } catch (err) {
