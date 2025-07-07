@@ -7,10 +7,13 @@ const SignUpBox = () => {
   const [name, setName] = useState('');
   const navigate = useNavigate();
 
+  // ✅ ใช้ BASE_URL จาก .env
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://bgai-repo.onrender.com/api/sign-up', { // ✅ แก้ path ให้ตรง backend
+      const res = await fetch(`${BASE_URL}/api/sign-up`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,13 +22,13 @@ const SignUpBox = () => {
           email: email,
           username: name,
           password: password,
-          age: 20, // ✅ ยัง hardcoded ได้สำหรับทดสอบ
+          age: 20,
         }),
       });
 
       if (res.ok) {
         alert('✅ สมัครสมาชิกสำเร็จ!');
-        navigate('/'); // ✅ กลับหน้า login
+        navigate('/');
       } else {
         const errorText = await res.text();
         alert('❌ สมัครไม่สำเร็จ: ' + errorText);
