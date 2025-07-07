@@ -6,6 +6,8 @@ export const LoginBox = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -24,7 +26,7 @@ export const LoginBox = () => {
 
     // ✅ เรียก backend login จริง
     try {
-      const response = await fetch('https://bgai-repo.onrender.com/login', {
+      const response = await fetch(`${BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -105,4 +107,3 @@ export const LoginBox = () => {
     </form>
   );
 };
-
