@@ -11,10 +11,11 @@ const tableData = [
   { id: 6, players: "3-4", status: "available" },
 ];
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 export const Home = () => {
   const navigate = useNavigate();
 
-  // ✅ ตรวจสอบว่ามี token หรือไม่ ถ้าไม่มีให้กลับไปหน้า Login
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -23,14 +24,34 @@ export const Home = () => {
     }
   }, [navigate]);
 
-  const handleJoinTable = (tableNumber) => {
-    navigate(`/lobby/${tableNumber}`);
+  const handleJoinTable = async (tableNumber) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${API_BASE}/api/join_table/${tableNumber}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        navigate(`/lobby/${tableNumber}`);
+      } else {
+        alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาด");
+    }
   };
 
   return (
     <>
       <p className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-black font-bold py-4 px-6 text-2xl 
-                    rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
+        rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
       </p>
 
@@ -48,6 +69,3 @@ export const Home = () => {
     </>
   );
 };
-
-
-
