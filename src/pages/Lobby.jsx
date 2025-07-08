@@ -18,7 +18,8 @@ export const Lobby = () => {
       return;
     }
 
-    fetch(`${API_BASE}/api/table/${id}/members`, {
+    // ✅ แก้ path นี้จาก /api/table/${id}/members ➜ /api/${id}/members
+    fetch(`${API_BASE}/api/${id}/members`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -49,6 +50,7 @@ export const Lobby = () => {
     }
 
     try {
+      // ✅ แก้ path นี้จาก /api/leave_table/${id} ➜ /api/leave_table/${id} (คงเดิมเพราะ backend ใช้อันนี้)
       const res = await fetch(`${API_BASE}/api/leave_table/${id}`, {
         method: "POST",
         headers: {
