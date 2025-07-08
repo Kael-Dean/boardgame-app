@@ -8,6 +8,7 @@ export const Lobby = () => {
 
   const API_BASE = import.meta.env.VITE_API_URL;
 
+  console.log("API_BASE:", API_BASE); // ✅ เช็คว่าอ่าน .env ได้ถูก
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -18,7 +19,14 @@ export const Lobby = () => {
       },
     })
       .then((res) => res.json())
-      .then((data) => setUsersInRoom(data))
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setUsersInRoom(data);
+        } else {
+          console.error("Unexpected data:", data);
+          alert("โหลดรายชื่อผู้เล่นผิดพลาด");
+        }
+      })
       .catch((err) => {
         console.error("load members error", err);
         alert("ไม่สามารถโหลดรายชื่อผู้เล่นได้");
