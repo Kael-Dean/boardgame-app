@@ -1,12 +1,43 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 export const Lobby = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const usersInRoom = ["Alice", "Bob", "Charlie"];
+  const [usersInRoom, setUsersInRoom] = useState([]);
 
-  const handleLeaveTable = () => {
-    navigate("/home");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:5000/api/table/${id}/members`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setUsersInRoom(data))
+      .catch((err) => {
+        console.error("load members error", err);
+        alert("ไม่สามารถโหลดรายชื่อผู้เล่นได้");
+      });
+  }, [id]);
+
+  const handleLeaveTable = async () => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`http://localhost:5000/api/leave_table/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      navigate("/home");
+    } else {
+      const data = await res.json();
+      alert(data.error || "ออกจากโต๊ะไม่สำเร็จ");
+    }
   };
 
   return (
@@ -16,9 +47,12 @@ export const Lobby = () => {
       </h2>
 
       <ul className="bg-white/10 p-4 rounded-xl shadow-md backdrop-blur">
-        {usersInRoom.map((name, index) => (
-          <li key={index} className="py-2 text-white border-b border-white/20">
-            {name}
+        {usersInRoom.map((user, index) => (
+          <li
+            key={index}
+            className="py-2 text-white border-b border-white/20"
+          >
+            {user.username} ({user.age} ปี)
           </li>
         ))}
       </ul>
@@ -34,6 +68,3 @@ export const Lobby = () => {
     </>
   );
 };
-
-
-
