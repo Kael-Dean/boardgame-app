@@ -6,10 +6,13 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const [usersInRoom, setUsersInRoom] = useState([]);
 
+  const API_BASE = import.meta.env.VITE_API_URL;
+
+
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    fetch(`http://localhost:5000/api/table/${id}/members`, {
+    fetch(`${API_BASE}/api/table/${id}/members`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -25,7 +28,7 @@ export const Lobby = () => {
   const handleLeaveTable = async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:5000/api/leave_table/${id}`, {
+    const res = await fetch(`${API_BASE}/api/leave_table/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,3 +71,4 @@ export const Lobby = () => {
     </>
   );
 };
+
