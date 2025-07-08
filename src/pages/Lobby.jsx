@@ -8,10 +8,15 @@ export const Lobby = () => {
 
   const API_BASE = import.meta.env.VITE_API_URL;
 
-  console.log("API_BASE:", API_BASE); // ✅ เช็คว่าอ่าน .env ได้ถูก
+  console.log("🌐 API_BASE:", API_BASE);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Token not found. กรุณา Login ใหม่");
+      return;
+    }
 
     fetch(`${API_BASE}/api/table/${id}/members`, {
       headers: {
@@ -20,15 +25,17 @@ export const Lobby = () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("📦 Response from backend:", data);
+
         if (Array.isArray(data)) {
           setUsersInRoom(data);
         } else {
-          console.error("Unexpected data:", data);
+          console.error("❌ Unexpected data format:", data);
           alert("โหลดรายชื่อผู้เล่นผิดพลาด");
         }
       })
       .catch((err) => {
-        console.error("load members error", err);
+        console.error("❌ load members error", err);
         alert("ไม่สามารถโหลดรายชื่อผู้เล่นได้");
       });
   }, [id]);
@@ -36,24 +43,34 @@ export const Lobby = () => {
   const handleLeaveTable = async () => {
     const token = localStorage.getItem("token");
 
-    const res = await fetch(`${API_BASE}/api/leave_table/${id}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    if (!token) {
+      alert("Token not found. กรุณา Login ใหม่");
+      return;
+    }
 
-    if (res.ok) {
-      navigate("/home");
-    } else {
-      const data = await res.json();
-      alert(data.error || "ออกจากโต๊ะไม่สำเร็จ");
+    try {
+      const res = await fetch(`${API_BASE}/api/leave_table/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        navigate("/home");
+      } else {
+        const data = await res.json();
+        alert(data.error || "ออกจากโต๊ะไม่สำเร็จ");
+      }
+    } catch (err) {
+      console.error("❌ leave_table error", err);
+      alert("เกิดข้อผิดพลาดขณะออกจากโต๊ะ");
     }
   };
 
   return (
     <>
-      <h2 className="text-2xl font-bold text-center mb-4">
+      <h2 className="text-2xl font-bold text-center mb-4 text-white">
         ผู้เล่นในโต๊ะที่ {id}
       </h2>
 
@@ -79,4 +96,3 @@ export const Lobby = () => {
     </>
   );
 };
-
