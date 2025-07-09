@@ -17,16 +17,11 @@ export const Home = () => {
     }
 
     const fetchTables = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/tables`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setTables(data.tables);
-      } catch (err) {
-        console.error("❌ ไม่สามารถโหลดโต๊ะ:", err);
-        alert("โหลดข้อมูลโต๊ะไม่สำเร็จ");
-      }
+      const res = await fetch(`${API_BASE}/api/tables`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setTables(data.tables);
     };
 
     fetchTables();
@@ -65,21 +60,17 @@ export const Home = () => {
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
       </p>
 
-      {tables.length === 0 ? (
-        <p className="text-white text-center">⏳ กำลังโหลดโต๊ะ...</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {tables.map((table) => (
-            <TableCard
-              key={table.id}
-              tableNumber={table.id}
-              players={`${table.members.length}/4`}
-              status={table.status}
-              onJoin={handleJoinTable}
-            />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {tables.map((table) => (
+          <TableCard
+            key={table.id}
+            tableNumber={table.id}
+            players={table.members.length}
+            status={table.status}
+            onJoin={handleJoinTable}
+          />
+        ))}
+      </div>
     </>
   );
 };
