@@ -26,7 +26,7 @@ export const Home = () => {
 
   const handleJoinTable = async (tableNumber) => {
     const token = localStorage.getItem("token");
-    console.log("🔑 Token ที่จะส่ง:", token); // debug
+    console.log("🔑 Token ที่จะส่ง:", token);
 
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableNumber}`, {
@@ -35,6 +35,7 @@ export const Home = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({}) // ✅ ต้องมี body
       });
 
       const data = await res.json();
@@ -71,4 +72,3 @@ export const Home = () => {
     </>
   );
 };
-  
