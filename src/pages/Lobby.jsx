@@ -15,15 +15,11 @@ export const Lobby = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) throw new Error("โหลดข้อมูลสมาชิกไม่สำเร็จ");
-
-      const data = await res.json();
-      if (!Array.isArray(data)) {
-        console.error("❌ ข้อมูลที่ได้ไม่ใช่ array:", data);
-        alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
-        return;
+      if (!res.ok) {
+        throw new Error("Failed to fetch members");
       }
 
+      const data = await res.json();
       setMembers(data);
     } catch (err) {
       console.error("❌ Failed to fetch members:", err);
@@ -34,20 +30,14 @@ export const Lobby = () => {
   const handleLeave = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
+      await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || "ออกจากโต๊ะไม่สำเร็จ");
-      }
-
       navigate("/home");
     } catch (err) {
       console.error("❌ Failed to leave table:", err);
-      alert(err.message || "ออกจากโต๊ะไม่สำเร็จ");
+      alert("ออกจากโต๊ะไม่สำเร็จ");
     }
   };
 
