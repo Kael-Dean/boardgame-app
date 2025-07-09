@@ -26,11 +26,13 @@ export const Home = () => {
 
   const handleJoinTable = async (tableNumber) => {
     const token = localStorage.getItem("token");
+    console.log("🔑 Token ที่จะส่ง:", token); // debug
 
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableNumber}`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -43,7 +45,7 @@ export const Home = () => {
         alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
       }
     } catch (err) {
-      console.error(err);
+      console.error("❌ join_table error", err);
       alert("เกิดข้อผิดพลาด");
     }
   };
@@ -69,3 +71,4 @@ export const Home = () => {
     </>
   );
 };
+  
