@@ -1,100 +1,83 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export const Lobby = () => {
-  const { id } = useParams();
+  const { tableId } = useParams();
   const navigate = useNavigate();
-  const [usersInRoom, setUsersInRoom] = useState([]);
+  const [members, setMembers] = useState([]);
 
-  const API_BASE = import.meta.env.VITE_API_URL;
-
-  console.log("🌐 API_BASE:", API_BASE);
-
-  useEffect(() => {
+  const fetchMembers = async () => {
     const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Token not found. กรุณา Login ใหม่");
-      return;
-    }
-
-    // ✅ แก้ path นี้จาก /api/table/${id}/members ➜ /api/${id}/members
-    fetch(`${API_BASE}/api/${id}/members`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("📦 Response from backend:", data);
-
-        if (Array.isArray(data)) {
-          setUsersInRoom(data);
-        } else {
-          console.error("❌ Unexpected data format:", data);
-          alert("โหลดรายชื่อผู้เล่นผิดพลาด");
-        }
-      })
-      .catch((err) => {
-        console.error("❌ load members error", err);
-        alert("ไม่สามารถโหลดรายชื่อผู้เล่นได้");
-      });
-  }, [id]);
-
-  const handleLeaveTable = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      alert("Token not found. กรุณา Login ใหม่");
-      return;
-    }
-
     try {
-      // ✅ แก้ path นี้จาก /api/leave_table/${id} ➜ /api/leave_table/${id} (คงเดิมเพราะ backend ใช้อันนี้)
-      const res = await fetch(`${API_BASE}/api/leave_table/${id}`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(`${API_BASE}/api/table/${tableId}/members`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.ok) {
-        navigate("/home");
-      } else {
-        const data = await res.json();
-        alert(data.error || "ออกจากโต๊ะไม่สำเร็จ");
+      if (!res.ok) throw new Error("โหลดข้อมูลสมาชิกไม่สำเร็จ");
+
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error("❌ ข้อมูลที่ได้ไม่ใช่ array:", data);
+        alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
+        return;
       }
+
+      setMembers(data);
     } catch (err) {
-      console.error("❌ leave_table error", err);
-      alert("เกิดข้อผิดพลาดขณะออกจากโต๊ะ");
+      console.error("❌ Failed to fetch members:", err);
+      alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
     }
   };
 
-  return (
-    <>
-      <h2 className="text-2xl font-bold text-center mb-4 text-white">
-        ผู้เล่นในโต๊ะที่ {id}
-      </h2>
+  const handleLeave = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      <ul className="bg-white/10 p-4 rounded-xl shadow-md backdrop-blur">
-        {usersInRoom.map((user, index) => (
-          <li
-            key={index}
-            className="py-2 text-white border-b border-white/20"
-          >
-            {user.username} ({user.age} ปี)
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || "ออกจากโต๊ะไม่สำเร็จ");
+      }
+
+      navigate("/home");
+    } catch (err) {
+      console.error("❌ Failed to leave table:", err);
+      alert(err.message || "ออกจากโต๊ะไม่สำเร็จ");
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    } else {
+      fetchMembers();
+      const interval = setInterval(fetchMembers, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [tableId]);
+
+  return (
+    <div className="p-6 text-white">
+      <h2 className="text-3xl font-bold mb-4">โต๊ะที่ {tableId}</h2>
+      <ul className="mb-4 space-y-2">
+        {members.map((user) => (
+          <li key={user.id} className="bg-white/10 p-3 rounded shadow">
+            🧙‍♂️ {user.username}
           </li>
         ))}
       </ul>
-
-      <div className="mt-6 text-center">
-        <button
-          onClick={handleLeaveTable}
-          className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white py-2 px-6 rounded-lg font-bold shadow-md transition"
-        >
-          ออกจากโต๊ะ
-        </button>
-      </div>
-    </>
+      <button
+        onClick={handleLeave}
+        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+      >
+        ออกจากโต๊ะ
+      </button>
+    </div>
   );
 };

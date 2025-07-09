@@ -1,47 +1,54 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TableCard } from "../components/TableCard";
-
-const tableData = [
-  { id: 1, players: "2-4", status: "available" },
-  { id: 2, players: "2-6", status: "full" },
-  { id: 3, players: "3-5", status: "available" },
-  { id: 4, players: "4-6", status: "available" },
-  { id: 5, players: "2-5", status: "full" },
-  { id: 6, players: "3-4", status: "available" },
-];
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
 export const Home = () => {
   const navigate = useNavigate();
+  const [tables, setTables] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       alert("⛔ กรุณาเข้าสู่ระบบก่อนใช้งาน");
       navigate("/");
+      return;
     }
+
+    const fetchTables = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/tables`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setTables(data.tables);
+      } catch (err) {
+        console.error("❌ ไม่สามารถโหลดโต๊ะ:", err);
+        alert("โหลดข้อมูลโต๊ะไม่สำเร็จ");
+      }
+    };
+
+    fetchTables();
   }, [navigate]);
 
-  const handleJoinTable = async (tableNumber) => {
+  const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
-    console.log("🔑 Token ที่จะส่ง:", token);
 
     try {
-      const res = await fetch(`${API_BASE}/api/join_table/${tableNumber}`, {
+      const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}) // ✅ ต้องมี body
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        navigate(`/lobby/${tableNumber}`);
+        navigate(`/lobby/${tableId}`);
       } else {
         alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
       }
@@ -58,17 +65,21 @@ export const Home = () => {
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {tableData.map((table) => (
-          <TableCard
-            key={table.id}
-            tableNumber={table.id}
-            players={table.players}
-            status={table.status}
-            onJoin={handleJoinTable}
-          />
-        ))}
-      </div>
+      {tables.length === 0 ? (
+        <p className="text-white text-center">⏳ กำลังโหลดโต๊ะ...</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {tables.map((table) => (
+            <TableCard
+              key={table.id}
+              tableNumber={table.id}
+              players={`${table.members.length}/4`}
+              status={table.status}
+              onJoin={handleJoinTable}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 };

@@ -8,7 +8,6 @@ import { Profile } from './pages/Profile';
 import { Search } from './pages/Search';  
 import { AppLayout } from './layouts/AppLayout';
 
-
 export const App = () => {
   const navigate = useNavigate();
   const [initialCheckDone, setInitialCheckDone] = useState(false);
@@ -26,19 +25,18 @@ export const App = () => {
   if (!initialCheckDone) return null;
 
   return (
-  <Routes>
-   <Route path="/" element={<LogIn />} />
+    <Routes>
+      <Route path="/" element={<LogIn />} />
 
-  {/* ✅ ทุกหน้าที่ใช้ Layout เดียวกัน */}
-    <Route element={<AppLayout />}>
-      <Route path="/home" element={<Home />} />
-      <Route path="/search" element={<Search />} />
-      <Route path="/basket" element={<Basket />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/lobby/:id" element={<Lobby />} />  {/* ✅ ย้ายเข้ามาด้วย */}
-    </Route>
- </Routes>
-
+      {/* ✅ ทุกหน้าที่ใช้ Layout เดียวกัน */}
+      <Route element={<AppLayout />}>
+        <Route path="/home" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/basket" element={<Basket />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/lobby/:tableId" element={<Lobby />} /> {/* ✅ เปลี่ยนตรงนี้ */}
+      </Route>
+    </Routes>
   );
 };
 
