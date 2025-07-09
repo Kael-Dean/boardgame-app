@@ -17,11 +17,28 @@ export const Home = () => {
     }
 
     const fetchTables = async () => {
-      const res = await fetch(`${API_BASE}/api/tables`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setTables(data.tables);
+      try {
+        const res = await fetch(`${API_BASE}/api/tables`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+            localStorage.removeItem("token");
+            navigate("/");
+            return;
+          }
+          throw new Error("ไม่สามารถโหลดโต๊ะได้");
+        }
+
+        const data = await res.json();
+        if (!data.tables) throw new Error("ไม่พบข้อมูลโต๊ะ");
+        setTables(data.tables);
+      } catch (err) {
+        console.error("❌ fetch tables error:", err);
+        alert("เกิดข้อผิดพลาดขณะโหลดโต๊ะ");
+      }
     };
 
     fetchTables();
@@ -66,7 +83,7 @@ export const Home = () => {
             key={table.id}
             tableNumber={table.id}
             players={table.members.length}
-            status={table.status}
+            status={table.is_full ? "เต็ม" : "ว่าง"} // ✅ ป้องกัน table.status undefined
             onJoin={handleJoinTable}
           />
         ))}
