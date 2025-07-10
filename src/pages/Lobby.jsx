@@ -15,9 +15,7 @@ export const Lobby = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch members");
-      }
+      if (!res.ok) throw new Error("Failed to fetch members");
 
       const data = await res.json();
       setMembers(data);

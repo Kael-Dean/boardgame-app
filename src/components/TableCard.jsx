@@ -1,5 +1,5 @@
 export const TableCard = ({ tableNumber, players, status, onJoin }) => {
-  const isAvailable = status === "ว่าง"; // ✅ เปลี่ยนจาก "available" เป็น "ว่าง"
+  const isAvailable = status === "ว่าง"; // ✅ เปลี่ยนจาก "available"
 
   const statusStyle = isAvailable
     ? "bg-green-500/70 text-green-100 shadow-green-400/30"
