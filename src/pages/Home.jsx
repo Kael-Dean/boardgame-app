@@ -52,10 +52,14 @@ export const Home = () => {
   const token = localStorage.getItem("token");
 
   try {
+    const handleJoinTable = async (tableId) => {
+  const token = localStorage.getItem("token");
+
+  try {
     const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`, // ✅ ไม่ต้องมี Content-Type หรือ body
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -71,6 +75,7 @@ export const Home = () => {
     alert("เกิดข้อผิดพลาด");
   }
 };
+
 
 
   return (
