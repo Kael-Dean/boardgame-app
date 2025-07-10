@@ -8,6 +8,7 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
 
+  // ✅ ดึงรายชื่อสมาชิกในโต๊ะ
   const fetchMembers = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -15,39 +16,57 @@ export const Lobby = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch members");
+      if (res.status === 401) {
+        alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        localStorage.removeItem("token");
+        navigate("/");
+        return;
       }
 
+      if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
+
       const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("ข้อมูลสมาชิกไม่ถูกต้อง");
+      }
+
       setMembers(data);
     } catch (err) {
-      console.error("❌ Failed to fetch members:", err);
+      console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
     }
   };
 
+  // ✅ ออกจากโต๊ะ
   const handleLeave = async () => {
     const token = localStorage.getItem("token");
     try {
-      await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
+      const res = await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "ออกจากโต๊ะไม่สำเร็จ");
+      }
+
       navigate("/home");
     } catch (err) {
-      console.error("❌ Failed to leave table:", err);
+      console.error("❌ leave_table error:", err);
       alert("ออกจากโต๊ะไม่สำเร็จ");
     }
   };
 
+  // ✅ โหลดข้อมูลเมื่อเข้าโต๊ะ
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
     } else {
-      fetchMembers();
-      const interval = setInterval(fetchMembers, 3000);
+      fetchMembers(); // โหลดครั้งแรก
+      const interval = setInterval(fetchMembers, 3000); // อัปเดตทุก 3 วิ
       return () => clearInterval(interval);
     }
   }, [tableId]);
@@ -55,6 +74,7 @@ export const Lobby = () => {
   return (
     <div className="p-6 text-white">
       <h2 className="text-3xl font-bold mb-4">โต๊ะที่ {tableId}</h2>
+
       <ul className="mb-4 space-y-2">
         {members.map((user) => (
           <li key={user.id} className="bg-white/10 p-3 rounded shadow">
@@ -62,6 +82,7 @@ export const Lobby = () => {
           </li>
         ))}
       </ul>
+
       <button
         onClick={handleLeave}
         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
