@@ -5,6 +5,7 @@ export const TableCard = ({ tableNumber, players, status, onJoin }) => {
     ? "bg-green-500/70 text-green-100 shadow-green-400/30"
     : "bg-red-600/70 text-red-100 shadow-red-400/30";
 
+  const statusText = isAvailable ? "ว่าง" : "ไม่ว่าง";
 
   return (
     <div className="glass bg-white/20 backdrop-blur-md border border-white/10 rounded-xl shadow-xl p-5 transition
