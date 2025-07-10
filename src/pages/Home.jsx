@@ -19,19 +19,12 @@ export const Home = () => {
     const fetchTables = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/tables`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (!res.ok) {
           if (res.status === 401) {
             alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
-            localStorage.removeItem("token");
-            navigate("/");
-            return;
-          } else if (res.status === 422) {
-            alert("⛔ Token ผิดพลาด หรือรูปแบบไม่ถูกต้อง");
             localStorage.removeItem("token");
             navigate("/");
             return;
@@ -90,7 +83,7 @@ export const Home = () => {
             key={table.id}
             tableNumber={table.id}
             players={table.members.length}
-            status={table.is_full ? "เต็ม" : "ว่าง"}
+            status={table.is_full ? "เต็ม" : "ว่าง"} // ✅ ป้องกัน table.status undefined
             onJoin={handleJoinTable}
           />
         ))}
