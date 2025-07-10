@@ -19,14 +19,20 @@ export const Home = () => {
     const fetchTables = async () => {
       try {
         const res = await fetch(`${API_BASE}/api/tables`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!res.ok) {
           if (res.status === 401) {
             alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
             localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            navigate("/");
+            return;
+          } else if (res.status === 422) {
+            alert("⛔ Token ผิดพลาด หรือรูปแบบไม่ถูกต้อง");
+            localStorage.removeItem("token");
             navigate("/");
             return;
           }
