@@ -49,30 +49,29 @@ export const Home = () => {
   }, [navigate]);
 
   const handleJoinTable = async (tableId) => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    try {
-      const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({}),
-      });
+  try {
+    const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ ไม่ต้องมี Content-Type หรือ body
+      },
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (res.ok) {
-        navigate(`/lobby/${tableId}`);
-      } else {
-        alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
-      }
-    } catch (err) {
-      console.error("❌ join_table error", err);
-      alert("เกิดข้อผิดพลาด");
+    if (res.ok) {
+      navigate(`/lobby/${tableId}`);
+    } else {
+      alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
     }
-  };
+  } catch (err) {
+    console.error("❌ join_table error", err);
+    alert("เกิดข้อผิดพลาด");
+  }
+};
+
 
   return (
     <>
