@@ -18,7 +18,7 @@ export const Home = () => {
 
     const fetchTables = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/tables`, {
+        const res = await fetch(`${API_BASE}/api/table_list`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
