@@ -79,14 +79,15 @@ export const Home = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {tables.map((table) => (
-          <TableCard
-            key={table.id}
-            tableNumber={table.id}
-            players={table.members.length}
-            status={table.is_full ? "เต็ม" : "ว่าง"} // ✅ ป้องกัน table.status undefined
-            onJoin={handleJoinTable}
-          />
-        ))}
+        <TableCard
+          key={table.table_id}
+          tableNumber={table.table_id}
+          players={0} // ✅ ใส่ 0 ไปก่อนถ้ายังไม่มี `members` จาก backend
+          status={table.status}
+          onJoin={handleJoinTable}
+         />
+    ))}
+
       </div>
     </>
   );
