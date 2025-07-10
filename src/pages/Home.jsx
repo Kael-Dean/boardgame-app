@@ -33,8 +33,6 @@ export const Home = () => {
         }
 
         const data = await res.json();
-
-        // ✅ รองรับทั้ง data เป็น array และ data.tables
         const parsedTables = Array.isArray(data) ? data : data.tables;
         if (!parsedTables) throw new Error("ไม่พบข้อมูลโต๊ะ");
 
@@ -49,34 +47,28 @@ export const Home = () => {
   }, [navigate]);
 
   const handleJoinTable = async (tableId) => {
-  const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-  try {
-    const handleJoinTable = async (tableId) => {
-  const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  try {
-    const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const data = await res.json();
 
-    const data = await res.json();
-
-    if (res.ok) {
-      navigate(`/lobby/${tableId}`);
-    } else {
-      alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
+      if (res.ok) {
+        navigate(`/lobby/${tableId}`);
+      } else {
+        alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
+      }
+    } catch (err) {
+      console.error("❌ join_table error", err);
+      alert("เกิดข้อผิดพลาด");
     }
-  } catch (err) {
-    console.error("❌ join_table error", err);
-    alert("เกิดข้อผิดพลาด");
-  }
-};
-
-
+  };
 
   return (
     <>
@@ -90,8 +82,8 @@ export const Home = () => {
           <TableCard
             key={table.table_id}
             tableNumber={table.table_id}
-            players={0} // ยังใช้ 0 ไปก่อน ถ้ายังไม่ได้ใส่ members
-            status={table.status === "available" ? "ว่าง" : "เต็ม"} // ✅ แปลสถานะ
+            players={0}
+            status={table.status === "available" ? "ว่าง" : "เต็ม"}
             onJoin={handleJoinTable}
           />
         ))}
