@@ -26,6 +26,7 @@ export const Home = () => {
           if (res.status === 401) {
             alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
             localStorage.removeItem("token");
+            localStorage.removeItem("user");
             navigate("/");
             return;
           }
@@ -83,7 +84,7 @@ export const Home = () => {
             key={table.id}
             tableNumber={table.id}
             players={table.members.length}
-            status={table.is_full ? "เต็ม" : "ว่าง"} // ✅ ป้องกัน table.status undefined
+            status={table.is_full ? "เต็ม" : "ว่าง"}
             onJoin={handleJoinTable}
           />
         ))}
