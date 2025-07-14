@@ -44,6 +44,9 @@ export const Home = () => {
 
   const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
+     console.log("🧪 API_BASE:", API_BASE);
+     console.log("🔐 Token:", token);
+     console.log("🎯 Join URL:", `${API_BASE}/api/join_table/${tableId}`);
 
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
