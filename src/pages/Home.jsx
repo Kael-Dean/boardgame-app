@@ -84,10 +84,10 @@
             <TableCard
               key={table.table_id}
               tableNumber={table.table_id}
-              players={0} // ✳ สามารถเปลี่ยนเป็นจำนวนจริงได้ถ้ามี API
-              status={table.status === "available" ? "ว่าง" : "เต็ม"}
+              players={0} // หากมีจำนวนจริงสามารถใส่ได้
               onJoin={() => handleJoinTable(table.table_id)}
             />
+
           ))}
         </div>
       </div>
