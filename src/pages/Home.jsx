@@ -55,7 +55,7 @@
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}), // ✅ สำคัญ ถึงจะไม่ได้ส่งอะไรก็ตาม
+      body: JSON.stringify({ dummy: true }), // ✅ สำคัญ ถึงจะไม่ได้ส่งอะไรก็ตาม
     });
 
     const data = await res.json();
