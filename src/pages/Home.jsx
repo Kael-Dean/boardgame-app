@@ -48,9 +48,11 @@ export const Home = () => {
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json"
+        headers: { 
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();
