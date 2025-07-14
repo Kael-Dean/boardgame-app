@@ -21,12 +21,16 @@ export const TableCard = ({ tableNumber, players, status, onJoin }) => {
 
       {isAvailable && (
         <button
-          onClick={() => onJoin?.(tableNumber)}
-          className="w-full py-2 mt-1 bg-yellow-300 hover:bg-yellow-400 active:bg-yellow-400
-           text-black font-bold rounded-lg transition duration-200 shadow-md"
+      onClick={() => {
+        console.log("🟡 Join button clicked");
+        onJoin();
+      }}
+      className="w-full py-2 mt-1 bg-yellow-300 hover:bg-yellow-400 active:bg-yellow-400
+      text-black font-bold rounded-lg transition duration-200 shadow-md"
         >
-          เข้าร่วมโต๊ะ
-        </button>
+      เข้าร่วมโต๊ะ
+       </button>
+
       )}
     </div>
   );
