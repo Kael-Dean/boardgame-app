@@ -22,23 +22,19 @@ export const Home = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!res.ok) {
-          if (res.status === 401) {
-            alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
-            localStorage.removeItem("token");
-            navigate("/");
-            return;
-          }
-          throw new Error("ไม่สามารถโหลดโต๊ะได้");
+        if (res.status === 401) {
+          alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+          localStorage.removeItem("token");
+          navigate("/");
+          return;
         }
 
-        const data = await res.json();
-        const parsedTables = Array.isArray(data) ? data : data.tables;
-        if (!parsedTables) throw new Error("ไม่พบข้อมูลโต๊ะ");
+        if (!res.ok) throw new Error("ไม่สามารถโหลดโต๊ะได้");
 
-        setTables(parsedTables);
+        const data = await res.json();
+        setTables(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.error("❌ fetch tables error:", err);
+        console.error("❌ fetchTables error:", err);
         alert("เกิดข้อผิดพลาดขณะโหลดโต๊ะ");
       }
     };
@@ -52,9 +48,7 @@ export const Home = () => {
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
@@ -65,13 +59,13 @@ export const Home = () => {
         alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
       }
     } catch (err) {
-      console.error("❌ join_table error", err);
-      alert("เกิดข้อผิดพลาด");
+      console.error("❌ join_table error:", err);
+      alert("เกิดข้อผิดพลาดขณะเข้าร่วมโต๊ะ");
     }
   };
 
   return (
-    <>
+    <div className="p-6 text-white">
       <p className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-black font-bold py-4 px-6 text-2xl 
         rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
@@ -82,12 +76,12 @@ export const Home = () => {
           <TableCard
             key={table.table_id}
             tableNumber={table.table_id}
-            players={0}
+            players={0} // ✳ สามารถเปลี่ยนเป็นจำนวนจริงได้ถ้ามี API
             status={table.status === "available" ? "ว่าง" : "เต็ม"}
-            onJoin={handleJoinTable}
+            onJoin={() => handleJoinTable(table.table_id)}
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };

@@ -8,9 +8,9 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
 
-  // ✅ ดึงรายชื่อสมาชิกในโต๊ะ
   const fetchMembers = async () => {
     const token = localStorage.getItem("token");
+
     try {
       const res = await fetch(`${API_BASE}/api/table/${tableId}/members`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -26,10 +26,7 @@ export const Lobby = () => {
       if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
 
       const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("ข้อมูลสมาชิกไม่ถูกต้อง");
-      }
+      if (!Array.isArray(data)) throw new Error("ข้อมูลสมาชิกผิดพลาด");
 
       setMembers(data);
     } catch (err) {
@@ -38,9 +35,9 @@ export const Lobby = () => {
     }
   };
 
-  // ✅ ออกจากโต๊ะ
   const handleLeave = async () => {
     const token = localStorage.getItem("token");
+
     try {
       const res = await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
         method: "POST",
@@ -59,14 +56,13 @@ export const Lobby = () => {
     }
   };
 
-  // ✅ โหลดข้อมูลเมื่อเข้าโต๊ะ
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/");
     } else {
-      fetchMembers(); // โหลดครั้งแรก
-      const interval = setInterval(fetchMembers, 3000); // อัปเดตทุก 3 วิ
+      fetchMembers();
+      const interval = setInterval(fetchMembers, 3000); // รีเฟรชทุก 3 วิ
       return () => clearInterval(interval);
     }
   }, [tableId]);
@@ -75,7 +71,7 @@ export const Lobby = () => {
     <div className="p-6 text-white">
       <h2 className="text-3xl font-bold mb-4">โต๊ะที่ {tableId}</h2>
 
-      <ul className="mb-4 space-y-2">
+      <ul className="mb-6 space-y-2">
         {members.map((user) => (
           <li key={user.id} className="bg-white/10 p-3 rounded shadow">
             🧙‍♂️ {user.username}
