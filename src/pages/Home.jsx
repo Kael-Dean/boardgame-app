@@ -50,13 +50,8 @@
 
   try {
     const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}) // ✅ สำคัญ ถึงจะไม่ได้ส่งอะไรก็ตาม
-    });
+            headers: { Authorization: `Bearer ${token}` },
+          });
 
     const data = await res.json();
 
