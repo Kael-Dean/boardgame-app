@@ -26,13 +26,13 @@ export const Lobby = () => {
       if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
 
       const data = await res.json();
-      if (!Array.isArray(data)) throw new Error("ข้อมูลสมาชิกผิดพลาด");
+      if (!Array.isArray(data.members)) throw new Error("ข้อมูลสมาชิกผิดพลาด");
 
-      setMembers(data);
+      setMembers(data.members); // ✅ ใช้ data.members ตาม backend ใหม่
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
-      navigate("/home"); // ✅ redirect ไปหน้า home ทันทีเมื่อ error
+      navigate("/home");
     }
   };
 
@@ -54,7 +54,7 @@ export const Lobby = () => {
     } catch (err) {
       console.error("❌ leave_table error:", err);
       alert("ออกจากโต๊ะไม่สำเร็จ");
-      navigate("/home"); // ✅ fallback กลับ home ถ้าออกจากโต๊ะไม่สำเร็จ
+      navigate("/home");
     }
   };
 
@@ -64,7 +64,7 @@ export const Lobby = () => {
       navigate("/");
     } else {
       fetchMembers();
-      const interval = setInterval(fetchMembers, 3000); // รีเฟรชทุก 3 วิ
+      const interval = setInterval(fetchMembers, 3000);
       return () => clearInterval(interval);
     }
   }, [tableId]);
@@ -75,7 +75,7 @@ export const Lobby = () => {
 
       <ul className="mb-6 space-y-2">
         {members.map((user) => (
-          <li key={user.id} className="bg-white/10 p-3 rounded shadow">
+          <li key={user.user_id} className="bg-white/10 p-3 rounded shadow">
             🧙‍♂️ {user.username}
           </li>
         ))}
