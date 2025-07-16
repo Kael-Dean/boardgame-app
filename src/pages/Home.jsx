@@ -45,6 +45,8 @@ export const Home = () => {
   const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    console.log("🔐 Token:", token);
+    console.log("🎯 Join URL:", `${API_BASE}/api/join_table/${tableId}`);
 
     if (!token || !userId) {
       alert("⛔ ไม่พบ token หรือ userId");
