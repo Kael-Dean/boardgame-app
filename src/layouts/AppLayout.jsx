@@ -6,7 +6,7 @@ import { FaSearch, FaHome, FaShoppingBasket } from "react-icons/fa";
 
 export const AppLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const sidebarRef = useRef(null); // ✅ ref เพื่อเช็ค click นอก sidebar
+  const sidebarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
@@ -26,7 +26,7 @@ export const AppLayout = () => {
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
   const inactiveStyle = "hover:text-yellow-100";
 
-  // ✅ ปิด sidebar เมื่อกดข้างนอก
+  // ปิด sidebar เมื่อคลิกนอก
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -67,30 +67,33 @@ export const AppLayout = () => {
         <p className="text-sm font-vt">{user?.name || "Guest"}</p>
       </div>
 
-      {/* Sidebar */}
-      {isSidebarOpen && (
-        <div
-          ref={sidebarRef} // ✅ ผูก ref
-          className="fixed top-0 left-0 w-64 h-full bg-[#684328] text-white z-40 shadow-lg pt-20"
-        >
-          <div className="p-5 border-b border-white/40 text-xl font-vt">
-            👤 {user?.name || "Guest"}
-          </div>
-          <div
-            className="p-5 text-red-400 hover:text-red-200 cursor-pointer text-xl font-vt"
-            onClick={handleLogout}
-          >
-            🚪 Logout
-          </div>
+      {/* Sidebar (slide-in) */}
+      <div
+        ref={sidebarRef}
+        className={`fixed top-[60px] left-0 w-64 h-[calc(100%-60px)] bg-[#684328] text-white z-40 shadow-lg pt-4
+          transition-transform duration-300 ease-in-out transform
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        <div className="p-5 border-b border-white/40 text-xl font-vt">
+          👤 {user?.name || "Guest"}
         </div>
-      )}
+        <div
+          className="p-5 text-red-400 hover:text-red-200 cursor-pointer text-xl font-vt"
+          onClick={handleLogout}
+        >
+          🚪 Logout
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <div className="pt-28 pb-24 px-4">
+      {/* Main Content - Push right when sidebar open */}
+      <div
+        className={`pt-28 pb-24 px-4 transition-all duration-300 ease-in-out
+          ${isSidebarOpen ? "ml-64" : "ml-0"}`}
+      >
         <Outlet />
       </div>
 
-      {/* BottomNav */}
+      {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 w-full h-16 glass bg-gradient-to-b from-[#3b2417]/50 to-[#1a0f07]/90 text-yellow-300 flex justify-around items-center z-50 shadow-inner border-t border-yellow-900/20">
         <button
           onClick={() => goTo("/home")}
@@ -127,4 +130,3 @@ export const AppLayout = () => {
     </>
   );
 };
-
