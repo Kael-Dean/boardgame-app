@@ -7,7 +7,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 export const Home = () => {
   const navigate = useNavigate();
   const [tables, setTables] = useState([]);
-_
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -44,23 +44,14 @@ _
 
   const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    if (!token || !userId) {
-      alert("⛔ ไม่พบ token หรือ userId");
-      return;
-    }
 
     try {
       const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          user_id: userId,
-        }),
       });
 
       const data = await res.json();
@@ -88,7 +79,7 @@ _
           <TableCard
             key={table.table_id}
             tableNumber={table.table_id}
-            players={0} // TODO: เพิ่มจำนวนผู้เล่นจริงจาก backend ได้ในอนาคต
+            players={0}
             onJoin={() => handleJoinTable(table.table_id)}
           />
         ))}
