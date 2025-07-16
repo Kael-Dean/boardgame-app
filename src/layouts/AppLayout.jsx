@@ -23,6 +23,7 @@ export const AppLayout = () => {
   };
 
   const isActive = (path) => location.pathname === path;
+
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
   const inactiveStyle = "text-yellow-300 hover:text-yellow-100";
 
@@ -44,7 +45,7 @@ export const AppLayout = () => {
 
   return (
     <>
-      {/* พื้นหลังหลัก */}
+      {/* BG */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/BG/board1.jpg')" }}
@@ -66,31 +67,25 @@ export const AppLayout = () => {
         <p className="text-sm font-vt">{user?.name || "Guest"}</p>
       </div>
 
-      {/* Sidebar แบบใช้ภาพ bg */}
+      {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`fixed top-[60px] left-0 w-64 h-[calc(100%-60px)] text-white z-50 shadow-xl pt-4
+        className={`fixed top-[60px] left-0 w-64 h-[calc(100%-60px)] bg-[#684328] text-white z-50 shadow-lg pt-4
           transition-transform duration-300 ease-in-out transform
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-        style={{
-          backgroundImage: "url('/BG/bg-sidebar.png')",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }}
       >
-        <div className="p-5 border-b border-white/40 text-xl font-vt bg-black/40">
+        <div className="p-5 border-b border-white/40 text-xl font-vt">
           👤 {user?.name || "Guest"}
         </div>
         <div
-          className="p-5 text-red-400 hover:text-red-200 cursor-pointer text-xl font-vt bg-black/30"
+          className="p-5 text-red-400 hover:text-red-200 cursor-pointer text-xl font-vt"
           onClick={handleLogout}
         >
           🚪 Logout
         </div>
       </div>
 
-      {/* Backdrop คลุมเนื้อหาหลัง Sidebar */}
+      {/* Backdrop */}
       {isSidebarOpen && (
         <div
           className="fixed top-[60px] left-0 w-full h-[calc(100%-60px)] bg-black/40 z-40"
