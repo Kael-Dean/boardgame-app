@@ -26,7 +26,6 @@ export const AppLayout = () => {
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
   const inactiveStyle = "hover:text-yellow-100";
 
-  // ปิด sidebar เมื่อคลิกข้างนอก (เฉพาะมือถือ)
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -67,13 +66,12 @@ export const AppLayout = () => {
         <p className="text-sm font-vt">{user?.name || "Guest"}</p>
       </div>
 
-      {/* Sidebar (overlay mobile, static desktop) */}
+      {/* Sidebar (overlay ทุกขนาดหน้าจอ) */}
       <div
         ref={sidebarRef}
-        className={`fixed top-[60px] left-0 h-[calc(100%-60px)] bg-[#684328] text-white z-50 shadow-lg pt-4 w-64
+        className={`fixed top-[60px] left-0 w-64 h-[calc(100%-60px)] bg-[#684328] text-white z-50 shadow-lg pt-4
           transition-transform duration-300 ease-in-out transform
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:static md:shadow-none md:z-0`}
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="p-5 border-b border-white/40 text-xl font-vt">
           👤 {user?.name || "Guest"}
@@ -86,15 +84,15 @@ export const AppLayout = () => {
         </div>
       </div>
 
-      {/* Overlay Backdrop (mobile only) */}
+      {/* Overlay Backdrop */}
       {isSidebarOpen && (
         <div
-          className="fixed top-[60px] left-0 w-full h-[calc(100%-60px)] bg-black/40 z-40 md:hidden"
+          className="fixed top-[60px] left-0 w-full h-[calc(100%-60px)] bg-black/40 z-40"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Main Content */}
+      {/* Main Content: คงที่ ไม่เลื่อน */}
       <div className="pt-28 pb-24 px-4">
         <Outlet />
       </div>
