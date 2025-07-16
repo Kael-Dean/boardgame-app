@@ -50,7 +50,10 @@
 
   try {
     const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}` },  
+            body: JSON.stringify({
+            user_id: localStorage.getItem("userId")
+            })
           });
 
     const data = await res.json();

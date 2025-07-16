@@ -15,7 +15,7 @@ export const LoginBox = () => {
       const response = await fetch(`${BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify( { email, password }),
       });
 
       if (!response.ok) {
@@ -32,6 +32,7 @@ export const LoginBox = () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(fixedUser));
+      localStorage.setItem("userId", data.user.id);
       alert('✅ เข้าระบบสำเร็จ!');
       navigate('/home');
     } catch (err) {
