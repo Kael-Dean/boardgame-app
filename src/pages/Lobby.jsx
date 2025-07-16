@@ -28,7 +28,7 @@ export const Lobby = () => {
       const data = await res.json();
       if (!Array.isArray(data.members)) throw new Error("ข้อมูลสมาชิกผิดพลาด");
 
-      setMembers(data.members); // ✅ ใช้ data.members ตาม backend ใหม่
+      setMembers(data.members);
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
@@ -90,3 +90,4 @@ export const Lobby = () => {
     </div>
   );
 };
+
