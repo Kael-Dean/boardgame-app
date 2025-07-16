@@ -23,8 +23,9 @@ export const AppLayout = () => {
   };
 
   const isActive = (path) => location.pathname === path;
+
   const activeStyle = "text-yellow-100 drop-shadow-[0_0_6px_#facc15] animate-pulse";
-  const inactiveStyle = "hover:text-yellow-100";
+  const inactiveStyle = "text-yellow-300 hover:text-yellow-100";
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -66,7 +67,7 @@ export const AppLayout = () => {
         <p className="text-sm font-vt">{user?.name || "Guest"}</p>
       </div>
 
-      {/* Sidebar (overlay ทุกขนาดหน้าจอ) */}
+      {/* Sidebar */}
       <div
         ref={sidebarRef}
         className={`fixed top-[60px] left-0 w-64 h-[calc(100%-60px)] bg-[#684328] text-white z-50 shadow-lg pt-4
@@ -84,7 +85,7 @@ export const AppLayout = () => {
         </div>
       </div>
 
-      {/* Overlay Backdrop */}
+      {/* Backdrop */}
       {isSidebarOpen && (
         <div
           className="fixed top-[60px] left-0 w-full h-[calc(100%-60px)] bg-black/40 z-40"
@@ -92,7 +93,7 @@ export const AppLayout = () => {
         />
       )}
 
-      {/* Main Content: คงที่ ไม่เลื่อน */}
+      {/* Main Content */}
       <div className="pt-28 pb-24 px-4">
         <Outlet />
       </div>
