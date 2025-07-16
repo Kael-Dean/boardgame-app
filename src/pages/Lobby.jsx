@@ -32,6 +32,7 @@ export const Lobby = () => {
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
+      navigate("/home"); // ✅ redirect ไปหน้า home ทันทีเมื่อ error
     }
   };
 
@@ -53,6 +54,7 @@ export const Lobby = () => {
     } catch (err) {
       console.error("❌ leave_table error:", err);
       alert("ออกจากโต๊ะไม่สำเร็จ");
+      navigate("/home"); // ✅ fallback กลับ home ถ้าออกจากโต๊ะไม่สำเร็จ
     }
   };
 
