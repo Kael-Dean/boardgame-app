@@ -26,9 +26,11 @@ export const Lobby = () => {
       if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
 
       const data = await res.json();
-      if (!Array.isArray(data.members)) throw new Error("ข้อมูลสมาชิกผิดพลาด");
-
+      if (!data.members || !Array.isArray(data.members)) {
+        throw new Error("ข้อมูลสมาชิกผิดพลาด");
+        }
       setMembers(data.members);
+
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
