@@ -10,6 +10,20 @@ export const Lobby = () => {
 
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
+  const autoLeaveIfStuck = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      await fetch(`${API_BASE}/api/leave_table/${tableId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("✅ Auto-leave called before entering Lobby");
+    } catch (err) {
+      console.warn("⚠️ Auto-leave failed (may not be a problem)", err);
+    }
+  };
+
   const fetchMembers = async () => {
     const token = localStorage.getItem("token");
 
@@ -66,9 +80,11 @@ export const Lobby = () => {
     if (!token) {
       navigate("/");
     } else {
-      fetchMembers();
-      const interval = setInterval(fetchMembers, 3000);
-      return () => clearInterval(interval);
+      autoLeaveIfStuck().then(() => {
+        fetchMembers();
+        const interval = setInterval(fetchMembers, 3000);
+        return () => clearInterval(interval);
+      });
     }
   }, [tableId]);
 
@@ -83,7 +99,7 @@ export const Lobby = () => {
             <li
               key={user.user_id}
               className={`p-3 rounded shadow ${
-                isMe ? "bg-yellow-500" : "bg-white/40"
+                isMe ? "bg-yellow-400" : "bg-white/40"
               }`}
             >
               🧙‍♂️ {user.username} {isMe && "(me)"}
@@ -103,4 +119,3 @@ export const Lobby = () => {
     </div>
   );
 };
-
