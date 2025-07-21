@@ -83,7 +83,7 @@ export const Lobby = () => {
             <li
               key={user.user_id}
               className={`p-3 rounded shadow ${
-                isMe ? "bg-yellow-400 text-stone-950" : "bg-white/40 text-black"
+                isMe ? "bg-yellow-400 text-stone-950 text-2xl" : "bg-white/70 text-black text-2xl"
               }`}
             >
               🧙‍♂️ {user.username} {isMe && "(me)"}
