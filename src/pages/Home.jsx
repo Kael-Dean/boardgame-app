@@ -10,6 +10,14 @@ export const Home = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const currentTableId = localStorage.getItem("currentTableId");
+
+    // 🔁 ถ้าเคยเข้าร่วมโต๊ะ ให้ redirect ไปที่ lobby
+    if (token && currentTableId) {
+      navigate(`/lobby/${currentTableId}`);
+      return;
+    }
+
     if (!token) {
       alert("⛔ กรุณาเข้าสู่ระบบก่อนใช้งาน");
       navigate("/");
@@ -44,9 +52,6 @@ export const Home = () => {
 
   const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
-    console.log("🔐 Token:", token);
-    console.log("🎯 Join URL:", `${API_BASE}/api/join_table/${tableId}`);
-
     if (!token) {
       alert("⛔ ไม่พบ token");
       return;
@@ -63,6 +68,8 @@ export const Home = () => {
       const data = await res.json();
 
       if (res.ok) {
+        // ✅ บันทึกว่าอยู่โต๊ะนี้แล้ว
+        localStorage.setItem("currentTableId", tableId);
         navigate(`/lobby/${tableId}`);
       } else {
         alert(data.error || "ไม่สามารถเข้าร่วมโต๊ะได้");
