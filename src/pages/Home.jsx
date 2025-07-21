@@ -44,12 +44,11 @@ export const Home = () => {
 
   const handleJoinTable = async (tableId) => {
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
     console.log("🔐 Token:", token);
     console.log("🎯 Join URL:", `${API_BASE}/api/join_table/${tableId}`);
 
-    if (!token || !userId) {
-      alert("⛔ ไม่พบ token หรือ userId");
+    if (!token) {
+      alert("⛔ ไม่พบ token");
       return;
     }
 
@@ -57,12 +56,8 @@ export const Home = () => {
       const res = await fetch(`${API_BASE}/api/join_table/${tableId}`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          user_id: userId,
-        }),
       });
 
       const data = await res.json();
@@ -80,8 +75,10 @@ export const Home = () => {
 
   return (
     <div className="p-6 text-white">
-      <p className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-black font-bold py-4 px-6 text-2xl 
-        rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center">
+      <p
+        className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-black font-bold py-4 px-6 text-2xl 
+        rounded-lg shadow-[0_4px_0_#b8860b] active:translate-y-1 active:shadow-none transition-all mb-6 w-fit mx-auto text-center"
+      >
         เลือกโต๊ะที่คุณต้องการเข้าร่วม
       </p>
 
@@ -90,7 +87,7 @@ export const Home = () => {
           <TableCard
             key={table.table_id}
             tableNumber={table.table_id}
-            players={0} // TODO: เพิ่มจำนวนผู้เล่นจริงจาก backend ได้ในอนาคต
+            players={table.current_players || 0}
             onJoin={() => handleJoinTable(table.table_id)}
           />
         ))}
