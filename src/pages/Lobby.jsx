@@ -8,6 +8,8 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
 
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+
   const fetchMembers = async () => {
     const token = localStorage.getItem("token");
 
@@ -28,9 +30,8 @@ export const Lobby = () => {
       const data = await res.json();
       if (!data.members || !Array.isArray(data.members)) {
         throw new Error("ข้อมูลสมาชิกผิดพลาด");
-        }
+      }
       setMembers(data.members);
-
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
@@ -76,20 +77,29 @@ export const Lobby = () => {
       <h2 className="text-3xl font-bold mb-6">โต๊ะที่ {tableId}</h2>
 
       <ul className="mb-6 space-y-2">
-        {members.map((user) => (
-          <li key={user.user_id} className="bg-white/10 p-3 rounded shadow">
-            🧙‍♂️ {user.username}
-          </li>
-        ))}
+        {members.map((user) => {
+          const isMe = user.user_id === currentUser?.id;
+          return (
+            <li
+              key={user.user_id}
+              className={`p-3 rounded shadow ${
+                isMe ? "bg-green-500" : "bg-white/40"
+              }`}
+            >
+              🧙‍♂️ {user.username} {isMe && "(me)"}
+            </li>
+          );
+        })}
       </ul>
-    <div className="flex justify-center">
-      <button
-        onClick={handleLeave}
-        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-      >
-        ออกจากโต๊ะ
-      </button>
-    </div> 
+
+      <div className="flex justify-center">
+        <button
+          onClick={handleLeave}
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+        >
+          ออกจากโต๊ะ
+        </button>
+      </div>
     </div>
   );
 };
