@@ -82,8 +82,10 @@ export const Lobby = () => {
           return (
             <li
               key={user.user_id}
-              className={`p-3 rounded shadow ${
-                isMe ? "bg-yellow-400 text-stone-950 text-2xl" : "bg-white/70 text-black text-2xl"
+              className={`p-3 rounded-xl font-semibold transition-all duration-200 shadow-md active:shadow-inner cursor-default ${
+                isMe
+                  ? "bg-yellow-400 text-stone-950 text-2xl"
+                  : "bg-white/70 text-black text-2xl active:bg-white"
               }`}
             >
               🧙‍♂️ {user.username} {isMe && "(me)"}
@@ -103,4 +105,3 @@ export const Lobby = () => {
     </div>
   );
 };
-
