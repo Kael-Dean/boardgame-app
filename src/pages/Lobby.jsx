@@ -8,48 +8,35 @@ export const Lobby = () => {
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
 
-  const userId = localStorage.getItem("userId");
-
-  useEffect(() => {
+  const fetchMembers = async () => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      alert("⛔ กรุณาเข้าสู่ระบบ");
-      navigate("/");
-      return;
-    }
 
-    const fetchMembers = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/api/table/${tableId}/members`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    try {
+      const res = await fetch(`${API_BASE}/api/table/${tableId}/members`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        if (res.status === 401) {
-          alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
-          localStorage.removeItem("token");
-          navigate("/");
-          return;
-        }
-
-        if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
-
-        const data = await res.json();
-        if (!data.members || !Array.isArray(data.members)) {
-          throw new Error("ข้อมูลสมาชิกผิดพลาด");
-        }
-
-        setMembers(data.members);
-      } catch (err) {
-        console.error("❌ fetchMembers error:", err);
-        alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
-        navigate("/home");
+      if (res.status === 401) {
+        alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
+        localStorage.removeItem("token");
+        navigate("/");
+        return;
       }
-    };
 
-    fetchMembers();
-    const interval = setInterval(fetchMembers, 3000);
-    return () => clearInterval(interval);
-  }, [tableId, navigate]);
+      if (!res.ok) throw new Error("ไม่สามารถโหลดสมาชิกได้");
+
+      const data = await res.json();
+      if (!data.members || !Array.isArray(data.members)) {
+        throw new Error("ข้อมูลสมาชิกผิดพลาด");
+        }
+      setMembers(data.members);
+
+    } catch (err) {
+      console.error("❌ fetchMembers error:", err);
+      alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
+      navigate("/home");
+    }
+  };
 
   const handleLeave = async () => {
     const token = localStorage.getItem("token");
@@ -73,33 +60,37 @@ export const Lobby = () => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+    } else {
+      fetchMembers();
+      const interval = setInterval(fetchMembers, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [tableId]);
+
   return (
-    <div className="p-6 text-white">
-      <h2 className="text-3xl font-bold mb-4">โต๊ะที่ {tableId}</h2>
+    <div className="p-6 text-white text-center">
+      <h2 className="text-3xl font-bold mb-6">โต๊ะที่ {tableId}</h2>
 
       <ul className="mb-6 space-y-2">
-        {members.map((user) => {
-          const isMe = String(user.user_id) === userId;
-
-          return (
-            <li
-              key={user.user_id}
-              className={`p-3 rounded shadow transition ${
-                isMe ? "bg-yellow-300 text-black font-bold" : "bg-white/10 text-white"
-              }`}
-            >
-              🧙‍♂️ {user.username} {isMe && "(คุณ)"}
-            </li>
-          );
-        })}
+        {members.map((user) => (
+          <li key={user.user_id} className="bg-white/10 p-3 rounded shadow">
+            🧙‍♂️ {user.username}
+          </li>
+        ))}
       </ul>
-
+    <div className="flex justify-center">
       <button
         onClick={handleLeave}
         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
       >
         ออกจากโต๊ะ
       </button>
+    </div> 
     </div>
   );
 };
+
