@@ -21,6 +21,7 @@ export const Lobby = () => {
       if (res.status === 401) {
         alert("⛔ Token หมดอายุ กรุณาเข้าสู่ระบบใหม่");
         localStorage.removeItem("token");
+        localStorage.removeItem("currentTableId"); // ✅ ลบออกด้วย
         navigate("/");
         return;
       }
@@ -35,6 +36,7 @@ export const Lobby = () => {
     } catch (err) {
       console.error("❌ fetchMembers error:", err);
       alert("เกิดข้อผิดพลาดในการโหลดสมาชิก");
+      localStorage.removeItem("currentTableId"); // ✅ ลบออกด้วย
       navigate("/home");
     }
   };
@@ -53,10 +55,13 @@ export const Lobby = () => {
         throw new Error(data.error || "ออกจากโต๊ะไม่สำเร็จ");
       }
 
+      // ✅ ล้างสถานะ
+      localStorage.removeItem("currentTableId");
       navigate("/home");
     } catch (err) {
       console.error("❌ leave_table error:", err);
       alert("ออกจากโต๊ะไม่สำเร็จ");
+      localStorage.removeItem("currentTableId"); // กันพลาด
       navigate("/home");
     }
   };
